@@ -30,6 +30,7 @@ public class Transactions {
 
     public Transactions() {
         this.transactionDate = LocalDateTime.now();
+        this.status = TransactionStatus.PENDING; // Default status to PENDING
     }
 
     public long getTransactionId() {
@@ -79,11 +80,14 @@ public class Transactions {
     public void setTransactionType(String transactionType) {
         this.transactionType = transactionType;
     }
- // Transactions class
 
+    // Set transaction status based on approval
     public void setApproved(boolean isApproved) {
-        // Assuming you have a status field to represent approval
         this.status = isApproved ? TransactionStatus.APPROVED : TransactionStatus.REJECTED;
     }
-
+    
+    // Optional: a method to get a simple description of the transaction's status
+    public String getTransactionStatusDescription() {
+        return "Transaction " + this.transactionId + " is " + this.status;
+    }
 }

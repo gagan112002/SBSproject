@@ -18,11 +18,11 @@ public interface TransactionRepository extends JpaRepository<Transactions, Long>
     // Find all transactions by account ID and filter by transaction date range
     List<Transactions> findByAccountAccountIdAndTransactionDateBetween(long accountId, LocalDateTime startDate, LocalDateTime endDate);
 
-    // Find all transactions by user ID (assuming `user` is related to `User` object)
-    List<Transactions> findByUserUserId(long userId);
+    // Find all transactions by user ID (user accessed via Account)
+    List<Transactions> findByAccount_User_UserId(long userId);  // Updated query
 
-    // Find all transactions by user ID and filter by transaction date range
-    List<Transactions> findByUserUserIdAndTransactionDateBetween(long userId, LocalDateTime startDate, LocalDateTime endDate);
+    // Find all transactions by user ID and filter by transaction date range (user accessed via Account)
+    List<Transactions> findByAccount_User_UserIdAndTransactionDateBetween(long userId, LocalDateTime startDate, LocalDateTime endDate);  // Updated query
 
     // Find all transactions by a specific status (approved or rejected)
     List<Transactions> findByStatus(TransactionStatus status);

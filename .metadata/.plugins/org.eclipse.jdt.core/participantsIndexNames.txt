@@ -1,0 +1,3 @@
+INDEX VERSION 1.134
+C:\Users\gagan\OneDrive\Desktop\SBS Project\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2381123822.index
+\SBSBackend\src\main\resources

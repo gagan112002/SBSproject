@@ -1,0 +1,5 @@
+package com.smartbanking.sol.model;
+
+public class Address {
+
+}

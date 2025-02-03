@@ -1,0 +1,14 @@
+{
+    "userName":"Balaji",
+    "password":"balaji@123",
+    "userEmail":"balaji@xyz.com",
+    "userPhoneNo":7845896352,
+    "userAdharNo":874596856623,
+    "userPanNo":856234876,
+  "address": {
+    "street": "123 Main St",
+    "city": "Springfield",
+    "state": "Illinois",
+    "zipcode": "62704"
+  }
+}

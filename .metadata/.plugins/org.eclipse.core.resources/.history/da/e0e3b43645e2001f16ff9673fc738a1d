@@ -1,0 +1,42 @@
+package com.smartbanking.sol.services;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.smartbanking.sol.model.Transactions;
+import com.smartbanking.sol.repository.TransactionRepository;
+
+@Service
+public class TransactionService {
+
+    private final TransactionRepository transactionRepository;
+
+    public TransactionService(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
+
+    public List<Transactions> getTransactionsByUserId(long userId) {
+        return transactionRepository.findByUserUserId(userId);
+    }
+
+    public List<Transactions> getTransactionsByDateRange(long userId, LocalDateTime startDate, LocalDateTime endDate) {
+        return transactionRepository.findByUserUserIdAndDateBetween(userId, startDate, endDate);
+    }
+    
+    public List<Transactions> getTransactionHistory(long userId) {
+        return transactionRepository.findByUserUserId(userId);
+    }
+    public void updateTransactionStatus(long transactionId, boolean approved) {
+        Optional<Transactions> transaction = transactionRepository.findById(transactionId);
+        if (transaction.isPresent()) {
+            Transactions currentTransaction = transaction.get();
+            currentTransaction.setApproved(approved); // This method will update the status of the transaction
+            transactionRepository.save(currentTransaction); // Save the updated transaction to the database
+        } else {
+            throw new IllegalArgumentException("Transaction not found with ID: " + transactionId);
+        }
+    }
+}

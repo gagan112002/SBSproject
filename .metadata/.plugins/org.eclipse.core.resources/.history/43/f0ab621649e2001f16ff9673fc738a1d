@@ -1,0 +1,104 @@
+package com.smartbanking.sol.services;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.smartbanking.sol.model.Transactions;
+import com.smartbanking.sol.repository.TransactionRepository;
+
+@Service
+public class TransactionService {
+
+    private final TransactionRepository transactionRepository;
+
+    @Autowired
+    public TransactionService(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
+
+    // Get transactions by user ID
+    public List<Transactions> getTransactionsByUserId(long userId) {
+        return transactionRepository.findByUserUserId(userId);
+    }
+
+    // Get transactions by user ID and date range
+    public List<Transactions> getTransactionsByDateRange(long userId, LocalDateTime startDate, LocalDateTime endDate) {
+        return transactionRepository.findByUserUserIdAndDateBetween(userId, startDate, endDate);
+    }
+
+    // Get transaction history for a specific user
+    public List<Transactions> getTransactionHistory(long userId) {
+        return transactionRepository.findByUserUserId(userId);
+    }
+
+    // Create a new transaction (deposit, withdrawal, etc.)
+    public Transactions createTransaction(long userId, String transactionType, double amount) {
+        Transactions transaction = new Transactions();
+        transaction.setUserId(userId);
+        transaction.setTransactionType(transactionType);
+        transaction.setAmount(amount);
+        transaction.setDate(LocalDateTime.now());
+        transaction.setApproved(false);  // Initially set the transaction as not approved
+        
+        // Save transaction
+        return transactionRepository.save(transaction);
+    }
+
+    // Update transaction status (approve or reject)
+    public Transactions updateTransactionStatus(long transactionId, boolean approved) {
+        Optional<Transactions> transactionOpt = transactionRepository.findById(transactionId);
+        if (transactionOpt.isPresent()) {
+            Transactions transaction = transactionOpt.get();
+            transaction.setApproved(approved);
+            return transactionRepository.save(transaction);
+        }
+        return null;  // Transaction not found
+    }
+
+    // Cancel a transaction (rollback logic can be added)
+    public boolean cancelTransaction(long transactionId) {
+        Optional<Transactions> transactionOpt = transactionRepository.findById(transactionId);
+        if (transactionOpt.isPresent()) {
+            transactionRepository.deleteById(transactionId);
+            return true;  // Transaction successfully canceled
+        }
+        return false;  // Transaction not found
+    }
+
+    // Get the total amount of transactions for a user (deposit + withdrawal)
+    public double getTotalTransactionAmount(long userId) {
+        List<Transactions> transactions = transactionRepository.findByUserUserId(userId);
+        double totalAmount = 0;
+        
+        for (Transactions transaction : transactions) {
+            totalAmount += transaction.getAmount();
+        }
+        return totalAmount;
+    }
+
+    // Get the total deposit amount for a user (filter only deposits)
+    public double getTotalDepositAmount(long userId) {
+        List<Transactions> transactions = transactionRepository.findByUserUserIdAndTransactionType(userId, "DEPOSIT");
+        double totalAmount = 0;
+        
+        for (Transactions transaction : transactions) {
+            totalAmount += transaction.getAmount();
+        }
+        return totalAmount;
+    }
+
+    // Get the total withdrawal amount for a user (filter only withdrawals)
+    public double getTotalWithdrawalAmount(long userId) {
+        List<Transactions> transactions = transactionRepository.findByUserUserIdAndTransactionType(userId, "WITHDRAWAL");
+        double totalAmount = 0;
+        
+        for (Transactions transaction : transactions) {
+            totalAmount += transaction.getAmount();
+        }
+        return totalAmount;
+    }
+}

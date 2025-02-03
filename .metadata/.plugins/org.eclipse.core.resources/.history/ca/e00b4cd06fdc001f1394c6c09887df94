@@ -1,0 +1,5 @@
+package com.smartbanking.sol.controller;
+
+public class AdminController {
+
+}

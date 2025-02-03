@@ -1,0 +1,17 @@
+package com.smartbanking.sol.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table
+public class User {
+
+	private long userr_Id;
+	private long user_account_no;
+	private String first_name;
+	private String last_name;
+	private long user_adhar_no;
+	private long user_pan_no;
+	private Address address;
+}

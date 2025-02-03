@@ -1,0 +1,18 @@
+package com.smartbanking.sol.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import com.smartbanking.sol.model.Transactions;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Repository
+public interface TransactionRepository extends JpaRepository<Transactions, Long> {
+
+    // Find all transactions by user ID
+    List<Transactions> findByUserUserId(long userId);
+
+    // (Optional) Find all transactions within a specific date range
+    List<Transactions> findByUserUserIdAndDateBetween(long userId, LocalDateTime startDate, LocalDateTime endDate);
+}

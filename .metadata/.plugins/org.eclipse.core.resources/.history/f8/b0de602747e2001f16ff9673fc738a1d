@@ -1,0 +1,123 @@
+package com.smartbanking.sol.model;
+
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "accounts")
+public class Accounts {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long accountId; // Unique account ID
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user; // Each account belongs to a User
+
+    @Column(nullable = false, unique = true)
+    private String accountNumber; // Unique account number
+
+    @Column(nullable = false)
+    private String accountType; // e.g., Savings, Checking, etc.
+
+    @Column(nullable = false)
+    private BigDecimal balance = BigDecimal.ZERO; // Account balance
+
+    @Column(nullable = false)
+    private boolean isActive = true; // Whether the account is active or not
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt; // Account creation timestamp
+
+    @Column
+    private LocalDateTime lastModifiedAt; // Last modified timestamp for updates (e.g., deposits, withdrawals)
+
+    // Default constructor
+    public Accounts() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // Getters and Setters
+
+    public long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getLastModifiedAt() {
+        return lastModifiedAt;
+    }
+
+    public void setLastModifiedAt(LocalDateTime lastModifiedAt) {
+        this.lastModifiedAt = lastModifiedAt;
+    }
+
+    // Method to deposit money into the account
+    public void deposit(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) > 0) {
+            this.balance = this.balance.add(amount);
+            this.lastModifiedAt = LocalDateTime.now();
+        }
+    }
+
+    // Method to withdraw money from the account
+    public void withdraw(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) > 0 && this.balance.compareTo(amount) >= 0) {
+            this.balance = this.balance.subtract(amount);
+            this.lastModifiedAt = LocalDateTime.now();
+        }
+    }
+}

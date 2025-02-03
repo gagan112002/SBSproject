@@ -1,0 +1,5 @@
+package com.smartbanking.sol.repository;
+
+public class AccountRepository {
+
+}

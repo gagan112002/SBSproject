@@ -1,0 +1,17 @@
+package com.smartbanking.sol.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.smartbanking.sol.model.User;
+import com.smartbanking.sol.repository.UserRepository;
+
+@Service
+public class UserServices {
+
+	@Autowired
+	private UserRepository userRepository;
+	
+	public java.util.List<User> getUser(String email) {
+		return userRepository.findByUserEmail(email);
+	}
+}

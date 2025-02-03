@@ -1,0 +1,5 @@
+package com.smartbanking.sol.services;
+
+public class UserServices {
+
+}

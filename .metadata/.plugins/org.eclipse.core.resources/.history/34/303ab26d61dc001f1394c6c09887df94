@@ -1,0 +1,71 @@
+package com.smartbanking.sol.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import com.smartbanking.sol.model.User;
+import com.smartbanking.sol.services.UserServices;
+
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api")
+public class UserController {
+
+    @Autowired
+    private UserServices userService;
+
+    // Endpoint to test if the service is running
+    @GetMapping("/home")
+    public String home() {
+        return "Hello! Welcome to Smart Banking Solution.";
+    }
+
+    // Add a new user
+    @PostMapping("/addUser")
+    public ResponseEntity<String> addUser(@RequestBody User user) {
+        try {
+            // Check if a user with the same email already exists
+            Optional<User> existingUser = userService.getUserByEmail(user.getUserEmail());
+            if (existingUser.isPresent()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("A user with this email already exists.");
+            }
+            
+            // Add user to the database
+            userService.addUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body("User successfully registered.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while adding the user: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/loginUser")
+    public ResponseEntity<String> loginUser(@RequestBody User user) {
+        try {
+            // Find user by email
+            Optional<User> foundUser = userService.getUserByEmail(user.getUserEmail());
+
+            if (foundUser.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("User not found. Please check the email and try again.");
+            }
+
+            // Verify password using isPasswordValid
+            boolean isValidPassword = userService.isPasswordValid(user.getPassword(), foundUser.get().getPassword());
+            if (isValidPassword) {
+                return ResponseEntity.ok("Login successful.");
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Invalid credentials. Please check your email and password.");
+            }
+        } catch (Exception e) {
+            // Log the exception and return an error message
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred during login: " + e.getMessage());
+        }
+    }
+
+}
